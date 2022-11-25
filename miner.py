@@ -111,7 +111,7 @@ class Miner:
                         adj = self.compute_adj(line)
                     else:
                         proc = self.compute_process(line)
-                        # print(f"{proc} / {adj} / {pss}")
+                        print(f"{proc} / {adj}")
                         if self.process_count[proc] <= self.launched:
                             self.processes[proc][-1]["adj"] = adj
                             self.processes[proc][-1]["pss"] = self.compute_pss(line)
