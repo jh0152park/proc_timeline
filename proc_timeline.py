@@ -7,6 +7,6 @@ for file in os.listdir(os.getcwd()):
         log = open(file, "r", errors="ignore").readlines()
         break
 
-
-
+meminfo = miner.Miner(log)
+meminfo.start_parsing()
 
