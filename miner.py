@@ -70,6 +70,7 @@ class Miner:
                 if "sandbox" not in line and "gms" not in line and "activities" in line:
                     proc = line.split()[1]
                     if proc not in self.test_apps:
+                        print(proc)
                         self.test_apps.append(proc)
             elif fg is True and "(pid " not in line:
                 fg = False
@@ -80,8 +81,8 @@ class Miner:
         return adj
 
     @staticmethod
-    def compute_pss(log) -> int:
-        return int(log.split()[0][:-2].replace(",", ""))
+    def compute_pss(log) -> str:
+        return log.split()[0][:-2].replace(",", "")
 
     @staticmethod
     def compute_swap(log) -> int:

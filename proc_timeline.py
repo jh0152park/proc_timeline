@@ -21,5 +21,7 @@ report.bring_launch_time(meminfo.get_launch_time())
 report.bring_test_apps(meminfo.get_test_apps())
 
 report.write_scenario()
+report.write_processes()
+report.write_processes_detail()
 
 report.close_sheet()
