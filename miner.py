@@ -1,11 +1,12 @@
 class Miner:
     def __init__(self, log):
         self.log = log
-        self.time = []
+        self.launch_time = []
         self.scenario = []
         self.processes = {}
         self.process_count = {}
 
+        self.test_apps = []
         self.launched = 100
 
     def compute_scenario(self):
@@ -13,7 +14,7 @@ class Miner:
             line = self.log[i][:-1]
             if "run this app" in line:
                 app = line.split(":")[-1].strip()
-                self.time.append(self.log[i-1][:-1])
+                self.launch_time.append(self.log[i-1][:-1])
                 if len(self.scenario) > 1 and self.scenario[-1] == "Fit The Fat 3":
                     self.scenario.append("Call of Duty")
                 elif len(self.scenario) > 1 and self.scenario[-1] == "ESPN":
@@ -54,6 +55,24 @@ class Miner:
             else:
                 if proc not in self.processes.keys():
                     self.processes[proc] = []
+
+    def compute_test_process(self):
+        fg = False
+
+        for line in self.log:
+            line = line[:-1]
+
+            if "Foreground" in line:
+                fg = True
+                continue
+
+            if fg is True and "(pid " in line:
+                if "sandbox" not in line and "gms" not in line and "activities" in line:
+                    proc = line.split()[1]
+                    if proc not in self.test_apps:
+                        self.test_apps.append(proc)
+            elif fg is True and "(pid " not in line:
+                fg = False
 
     @staticmethod
     def compute_adj(log):
@@ -111,7 +130,7 @@ class Miner:
                         adj = self.compute_adj(line)
                     else:
                         proc = self.compute_process(line)
-                        print(f"{proc} / {adj}")
+                        # print(f"{proc} / {adj}")
                         if self.process_count[proc] <= self.launched:
                             self.processes[proc][-1]["adj"] = adj
                             self.processes[proc][-1]["pss"] = self.compute_pss(line)
@@ -120,6 +139,19 @@ class Miner:
 
     def start_parsing(self):
         self.compute_scenario()
+        self.compute_test_process()
         self.read_all_process()
         self.select_process()
         self.compute_processes()
+
+    def get_scenario(self):
+        return self.scenario
+
+    def get_processes_info(self):
+        return self.processes
+
+    def get_launch_time(self):
+        return self.launch_time
+
+    def get_test_apps(self):
+        return self.test_apps
