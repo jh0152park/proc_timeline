@@ -1,10 +1,12 @@
 import xlsxwriter
+import report_format
 
 
 class Report:
     def __init__(self, model):
         self.workbook = xlsxwriter.Workbook(model + "_proc_timeline.xlsx")
         self.sheet = self.workbook.add_worksheet("Summary")
+        self.format = report_format.Format(self.workbook)
 
         self.scenario = []
         self.test_apps = []
@@ -36,9 +38,15 @@ class Report:
     def write_scenario(self):
         for i in range(len(self.launch_time)):
             self.sheet.set_column(2 + i, 1, 11)
-            self.write_string(2 + i, 1, self.launch_time[i], None)
+            self.write_string(2 + i, 1, self.launch_time[i],
+                                self.format.set_format(False, 10, report_format.COLORS["white"],
+                                                        report_format.COLORS["black"], "center",
+                                                        2, 2, 2, 2))
         for i in range(len(self.scenario)):
-            self.write_string(2 + i, 2, self.scenario[i], None)
+            self.write_string(2 + i, 2, self.scenario[i],
+                                self.format.set_format(False, 10, report_format.COLORS["white"],
+                                                        report_format.COLORS["black"], "center",
+                                                        2, 2, 2, 2))
 
     def write_processes(self):
         processes = list(self.processes.keys())
@@ -49,7 +57,10 @@ class Report:
         self.sheet.set_column(0, 0, 40)
         for i in range(len(self.process_sequence)):
             self.sheet.set_row(2 + i, 60, None)
-            self.write_string(1, 3 + i, self.process_sequence[i], None)
+            self.write_string(1, 3 + i, self.process_sequence[i],
+                                self.format.set_format(False, 10, report_format.COLORS["white"],
+                                                        report_format.COLORS["black"], "center",
+                                                        2, 2, 2, 2))
 
     def write_processes_detail(self):
         y = 0
@@ -57,7 +68,15 @@ class Report:
             y += 1
             for info in self.processes[proc]:
                 if info["pid"] == 0:
-                    self.write_string(1 + info["launched"], 2 + y, "", None)
+                    self.write_string(1 + info["launched"], 2 + y, "",
+                                        self.format.set_format(False, 10, report_format.COLORS["white"],
+                                                                report_format.COLORS["black"], "center",
+                                                                1, 1, 1, 1))
                 else:
+                    thick = 1 if info["activity"] is False else 2
+                    bg_color = self.format.get_bg_color_by_adj(info["adj"])
                     self.write_string(1 + info["launched"], 2 + y,
-                                        info["adj"] + "\n" + info["pid"] + "\n" + info["pss"], None)
+                                        info["adj"] + "\n" + info["pid"] + "\n" + info["pss"],
+                                        self.format.set_format(info["activity"], 10, bg_color,
+                                                                report_format.COLORS["black"], "center",
+                                                                thick, thick, thick, thick))
