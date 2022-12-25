@@ -11,4 +11,7 @@ And at a glance the status of the background process as a whole.
 We can analysis more easily about multitasking performance every process while test
 
 # Requirement
-1. Full time "dumpsys meminfo" log file by our refresh performance test.
+- Full time "dumpsys meminfo" log file by our refresh performance test.
+
+# Result File
+One simple excel file.
